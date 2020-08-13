@@ -197,5 +197,3 @@ def gameloop():
     # function containing the loop for the main processes
 
     pass
-
-print(bot4.lMid)
