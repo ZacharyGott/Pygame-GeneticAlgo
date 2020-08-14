@@ -277,13 +277,7 @@ def gameloop():
     pass
 
 
-# In[128]:
 
-
-bot1.sensLeft
-
-
-# In[ ]:
 
 
 
