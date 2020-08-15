@@ -205,8 +205,8 @@ def outNodeLeft(chrom, inputs, bot):
         n2 = inputs[1] * (chrom[3] / 1000)
         n3 = inputs[2] * (chrom[6] / 1000)
         n4 = inputs[3] * (chrom[9] / 1000)
-        return n1+n2+n3+n4
-        #bot.outputLeft = n1+n2+n3+n4
+        #return n1+n2+n3+n4
+        bot.outputList[0] = n1+n2+n3+n4
     else:
         pass
 
@@ -218,8 +218,8 @@ def outNodeFront(chrom, inputs, bot):
         n2 = inputs[1] * (chrom[4] / 1000)
         n3 = inputs[2] * (chrom[7] / 1000)
         n4 = inputs[3] * (chrom[10] / 1000)
-        return n1 + n2 + n3 + n4
-        bot.outputFront = n1+n2+n3+n4
+        #return n1 + n2 + n3 + n4
+        bot.outputList[1] = n1+n2+n3+n4
     else:
         pass
 
@@ -231,8 +231,8 @@ def outNodeRight(chrom, inputs, bot):
         n2 = inputs[1] * (chrom[5] / 1000)
         n3 = inputs[2] * (chrom[8] / 1000)
         n4 = inputs[3] * (chrom[11] / 1000)
-        return n1 + n2 + n3 + n4
-        bot.outputRight = n1+n2+n3+n4
+        #return n1 + n2 + n3 + n4
+        bot.outputList[2] = n1+n2+n3+n4
     else:
         pass
 
@@ -286,6 +286,8 @@ class Player():
     outputList = [outputLeft, outputFront, outputRight]
     
     fitness = 0
+
+    canMove = True
 
 
 # In[7]:
@@ -342,25 +344,54 @@ def gameloop():
                 if event.key == pygame.K_e: sys.exit()
 
         for i in botList:
-            listOfOut = [
-            outNodeLeft(i.chromosome, i.sensList, i),
-            outNodeFront(i.chromosome, i.sensList, i),
+
+            if i.xPos > width-65 or i.xPos < 40:
+                i.canMove = False
+            if i.yPos > height-65 or i.yPos < 40:
+                i.canMove = False
+
+            outNodeLeft(i.chromosome, i.sensList, i)
+            outNodeFront(i.chromosome, i.sensList, i)
             outNodeRight(i.chromosome, i.sensList, i)
-            ]
-            if max(listOfOut) == listOfOut[0]:
+
+            if max(i.outputList) == i.outputList[0] and i.canMove:
                 i.xPos += -5
-            elif max(listOfOut) == listOfOut[1]:
+            elif max(i.outputList) == i.outputList[1] and i.canMove:
                 i.yPos += -5
-            elif max(listOfOut) == listOfOut[2]:
+            elif max(i.outputList) == i.outputList[2] and i.canMove:
                 i.xPos += 5
 
+                i.xCent = i.xPos + 15
+                i.yCent = i.yPos + 15
+                i.selfCenter = (i.xCent, i.yCent)
+
+                i.UL_corner = (i.xCent - 15, i.yCent + 15)
+                i.UR_corner = (i.xCent + 15, i.yCent + 15)
+                i.BR_corner = (i.xCent + 15, i.yCent - 15)
+                i.BL_corner = (i.xCent - 15, i.yCent - 15)
+
+                i.top = (i.UL_corner, i.UR_corner)
+                i.left = (i.BL_corner, i.UL_corner)
+                i.bottom = (i.BL_corner, i.BR_corner)
+                i.right = (i.BR_corner, i.UR_corner)
+
+                i.lMid = midpoint(i.left)
+                i.tMid = midpoint(i.top)
+                i.rMid = midpoint(i.right)
+
+                i.sensLeft = distLeft(i.lMid, walls)
+                i.sensFront = distFront(i.tMid, walls)
+                i.sensRight = distRight(i.rMid, walls)
+                i.sensObj = distObj(i.selfCenter, targetPos)
+                i.sensList = [i.sensLeft, i.sensFront, i.sensRight, i.sensObj]
+
         screen.fill(white)
+        pygame.draw.rect(screen, (255, 0, 0), end_rect)
         for i in botList:
             screen.blit(i.sprite, (i.xPos, i.yPos))
         for wall in walls:
             pygame.draw.rect(screen, (black), wall.rect)
-        pygame.draw.rect(screen, (255, 0, 0), end_rect)
-        print(bot1.xPos)
+        print(bot1.sensFront)
         pygame.display.update()
         clock.tick(30)
         
