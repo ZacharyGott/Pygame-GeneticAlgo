@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[24]:
+# In[1]:
 
 
 # Packages and dependancies
 
+import sys
+import random
 import math
 import pygame
 pygame.init()
 
 
-# In[10]:
+# In[2]:
 
 
 # Basic Pygame attributes
@@ -25,7 +27,7 @@ screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 
-# In[11]:
+# In[3]:
 
 
 # Useful functions for Walls class
@@ -62,7 +64,7 @@ def verticlePoint(side):
     return tempList
 
 
-# In[33]:
+# In[4]:
 
 
 # Class for creating walls, obbjective and anything related
@@ -109,8 +111,8 @@ wallString = [
     'W        W',
     'W        W',
     'W WW  WW W',
-    'WW       W',
-    'WW       W',
+    'W        W',
+    'W        W',
     'WWWWWWWWWW'
 ]
 
@@ -127,7 +129,7 @@ for row in wallString:
     dx = 0
 
 
-# In[122]:
+# In[5]:
 
 
 # Functions for the "Player" class to fill in data
@@ -139,6 +141,8 @@ def midpoint(side):
     
     return (round((side[0][0] + side[1][0])/2), round((side[0][1] + side[1][1])/2))
 
+
+'''Function for finding distance'''
 
 def distLeft(middlePoint, walls):
     
@@ -192,7 +196,48 @@ def distObj(selfCenter, targetCenter):
     return round(math.sqrt(((targetCenter[0] - selfCenter[0]) ** 2) + ((targetCenter[1] - selfCenter[1]) ** 2)))
 
 
-# In[123]:
+'''Functions for returning the output nodes'''
+
+def outNodeLeft(chrom, inputs, bot):
+    
+    if len(chrom) > 0:
+        n1 = inputs[0] * (chrom[0] / 1000)
+        n2 = inputs[1] * (chrom[3] / 1000)
+        n3 = inputs[2] * (chrom[6] / 1000)
+        n4 = inputs[3] * (chrom[9] / 1000)
+        return n1+n2+n3+n4
+        #bot.outputLeft = n1+n2+n3+n4
+    else:
+        pass
+
+
+def outNodeFront(chrom, inputs, bot):
+    
+    if len(chrom) > 0:
+        n1 = inputs[0] * (chrom[1] / 1000)
+        n2 = inputs[1] * (chrom[4] / 1000)
+        n3 = inputs[2] * (chrom[7] / 1000)
+        n4 = inputs[3] * (chrom[10] / 1000)
+        return n1 + n2 + n3 + n4
+        bot.outputFront = n1+n2+n3+n4
+    else:
+        pass
+
+
+def outNodeRight(chrom, inputs, bot):
+    
+    if len(chrom) > 0:
+        n1 = inputs[0] * (chrom[2] / 1000)
+        n2 = inputs[1] * (chrom[5] / 1000)
+        n3 = inputs[2] * (chrom[8] / 1000)
+        n4 = inputs[3] * (chrom[11] / 1000)
+        return n1 + n2 + n3 + n4
+        bot.outputRight = n1+n2+n3+n4
+    else:
+        pass
+
+
+# In[6]:
 
 
 # Creates a player class with useful data
@@ -233,13 +278,17 @@ class Player():
     sensFront = distFront(tMid, walls)
     sensRight = distRight(rMid, walls)
     sensObj = distObj(selfCenter, targetPos)
+    sensList = [sensLeft, sensFront, sensRight, sensObj]
     
-    
+    outputLeft = 0
+    outputFront = 0
+    outputRight = 0
+    outputList = [outputLeft, outputFront, outputRight]
     
     fitness = 0
 
 
-# In[124]:
+# In[7]:
 
 
 # Initialize bots and related criteria
@@ -264,8 +313,16 @@ bot8 = Player()
 
 botList = [bot1, bot2, bot3, bot4, bot5, bot6, bot7, bot8]
 
+for i in botList:
+    
+    bList = []
+    
+    for n in range(1,13):
+        bList.insert(len(bList), random.choice(range(0, 1000)))
+    i.chromosome = bList
 
-# In[125]:
+
+# In[8]:
 
 
 # Function for the game loop
@@ -274,10 +331,47 @@ def gameloop():
     
     #function containing the loop for the main processes
     
-    pass
+    inGame = True
+    
+    while inGame:
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: sys.exit()
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e: sys.exit()
+
+        for i in botList:
+            listOfOut = [
+            outNodeLeft(i.chromosome, i.sensList, i),
+            outNodeFront(i.chromosome, i.sensList, i),
+            outNodeRight(i.chromosome, i.sensList, i)
+            ]
+            if max(listOfOut) == listOfOut[0]:
+                i.xPos += -5
+            elif max(listOfOut) == listOfOut[1]:
+                i.yPos += -5
+            elif max(listOfOut) == listOfOut[2]:
+                i.xPos += 5
+
+        screen.fill(white)
+        for i in botList:
+            screen.blit(i.sprite, (i.xPos, i.yPos))
+        for wall in walls:
+            pygame.draw.rect(screen, (black), wall.rect)
+        pygame.draw.rect(screen, (255, 0, 0), end_rect)
+        print(bot1.xPos)
+        pygame.display.update()
+        clock.tick(30)
+        
 
 
+# In[9]:
 
+
+gameloop()
+
+# In[ ]:
 
 
 
