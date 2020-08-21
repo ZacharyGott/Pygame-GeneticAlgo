@@ -86,7 +86,7 @@ class Wall(object):
         self.UR_corner = (self.xCent+15, self.yCent+15)
         self.BR_corner = (self.xCent+15, self.yCent-15)
         self.BL_corner = (self.xCent-15, self.yCent-15)
-        
+
         self.top = (self.UL_corner, self.UR_corner)
         self.left = (self.BL_corner, self.UL_corner)
         self.bottom = (self.BL_corner, self.BR_corner)
@@ -96,6 +96,30 @@ class Wall(object):
         self.bottomList = horizontalPoint(self.bottom)
         self.leftList = verticlePoint(self.left)
         self.rightList = verticlePoint(self.right)
+
+    def get_UL_corner(self):
+        return self.UL_corner
+
+    def get_UR_corner(self):
+        return self.UR_corner
+
+    def get_BR_corner(self):
+        return self.BR_corner
+
+    def get_BL_corner(self):
+        return self.BL_corner
+
+    def get_topList(self):
+        return self.topList
+
+    def get_bottomList(self):
+        return self.bottomList
+
+    def get_leftList(self):
+        return self.leftList
+
+    def get_rightList(self):
+        return self.rightList
         
         
 wallString = [
@@ -345,10 +369,22 @@ def gameloop():
 
         for i in botList:
 
+            # Disables movement if bots are outside of boundaries
             if i.xPos > width-65 or i.xPos < 40:
                 i.canMove = False
             if i.yPos > height-65 or i.yPos < 40:
                 i.canMove = False
+
+            # Disables movement if bots hit a wall
+            for n in walls:
+
+                # If bot hit bottom
+                if n.get_BL_corner()[0] <= i.UL_corner[0] and i.UL_corner[0] <= n.get_BR_corner()[0]:
+                    if n.get_UL_corner()[1] <= i.UL_corner[1] and n.get_BL_corner()[1] >= i.UL_corner[1]:
+                        print('n')
+                if n.get_BL_corner()[0] <= i.UR_corner[0] and i.UR_corner[0] <= n.get_BR_corner()[0]:
+                    if n.get_UL_corner()[1] <= i.UR_corner[1] and n.get_BL_corner()[1] >= i.UR_corner[1]:
+                        pass
 
             outNodeLeft(i.chromosome, i.sensList, i)
             outNodeFront(i.chromosome, i.sensList, i)
@@ -391,6 +427,9 @@ def gameloop():
             screen.blit(i.sprite, (i.xPos, i.yPos))
         for wall in walls:
             pygame.draw.rect(screen, (black), wall.rect)
+        print(walls[15].get_UL_corner()[1])
+        print(walls[15].get_BL_corner()[1])
+        print('')
         pygame.display.update()
         clock.tick(30)
         
@@ -403,6 +442,11 @@ gameloop()
 
 # In[ ]:
 
+'''
+corners for both classes are calculated wrong and for some reason, when corrected, it completely fucks up the sensors
 
+ - thinking of switching the corner calculations to based off of the origin coords of the objects, and fix sensors from
+ there.
+'''
 
 
