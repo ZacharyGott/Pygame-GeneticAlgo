@@ -54,9 +54,9 @@ def verticlePoint(side):
     
     tempList = []
     
-    tempY = side[0][1]
+    tempY = side[1][1]
     
-    for i in range(side[0][1], side[1][1] + 1):
+    for i in range(side[1][1], side[0][1] + 1):
         
         tempList.insert(len(tempList), (side[0][0], tempY))
         tempY += 1
@@ -67,7 +67,7 @@ def verticlePoint(side):
 # In[4]:
 
 
-# Class for creating walls, obbjective and anything related
+# Class for creating walls, objective and anything related
 
 targetPos = ()
 
@@ -82,10 +82,10 @@ class Wall(object):
         self.xCent = pos[0]+19
         self.yCent = pos[1]+19
         
-        self.UL_corner = (self.xCent-15, self.yCent+15)
-        self.UR_corner = (self.xCent+15, self.yCent+15)
-        self.BR_corner = (self.xCent+15, self.yCent-15)
-        self.BL_corner = (self.xCent-15, self.yCent-15)
+        self.UL_corner = (pos[0], pos[1])
+        self.UR_corner = (pos[0]+40, pos[1])
+        self.BR_corner = (pos[0]+40, pos[1]+40)
+        self.BL_corner = (pos[0], pos[1]+40)
 
         self.top = (self.UL_corner, self.UR_corner)
         self.left = (self.BL_corner, self.UL_corner)
