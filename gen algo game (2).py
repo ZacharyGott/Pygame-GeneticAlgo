@@ -178,7 +178,11 @@ def distLeft(middlePoint, walls):
         for n in i.rightList:
             if middlePoint[1]-20 < n[1] < middlePoint[1]+20 and n[0] < middlePoint[0]:
                 listOfCoords.insert(len(listOfCoords), n)
-    nearest = max(listOfCoords)
+    try:
+        nearest = max(listOfCoords)
+    except:
+        return 0
+        pass
     
     return round(math.sqrt(((nearest[0] - middlePoint[0]) ** 2) + ((nearest[1] - middlePoint[1]) ** 2)))
 
@@ -284,10 +288,10 @@ class Player():
     yCent = yPos + 15
     selfCenter = (xCent, yCent)
     
-    UL_corner = (xCent-15, yCent+15)
-    UR_corner = (xCent+15, yCent+15)
-    BR_corner = (xCent+15, yCent-15)
-    BL_corner = (xCent-15, yCent-15)
+    UL_corner = (xPos, yPos)
+    UR_corner = (xPos+30, yPos)
+    BR_corner = (xPos+30, yPos+30)
+    BL_corner = (xPos, yPos+30)
     
     top = (UL_corner, UR_corner)
     left = (BL_corner, UL_corner)
@@ -370,9 +374,18 @@ def gameloop():
         for i in botList:
 
             # Disables movement if bots are outside of boundaries
-            if i.xPos > width-65 or i.xPos < 40:
+            if i.xPos > width-65:
+                i.xPos += 3
                 i.canMove = False
-            if i.yPos > height-65 or i.yPos < 40:
+            if i.xPos < 40:
+                i.xPos += -3
+                i.canMove = False
+
+            if i.yPos > height-65:
+                i.yPos += 3
+                i.canMove = False
+            if i.yPos < 40:
+                i.yPos += -3
                 i.canMove = False
 
             # Disables movement if bots hit a wall
@@ -380,11 +393,33 @@ def gameloop():
 
                 # If bot hit bottom
                 if n.get_BL_corner()[0] <= i.UL_corner[0] and i.UL_corner[0] <= n.get_BR_corner()[0]:
-                    if n.get_UL_corner()[1] <= i.UL_corner[1] and n.get_BL_corner()[1] >= i.UL_corner[1]:
-                        print('n')
+                    if n.get_BL_corner()[1]-5 <= i.UL_corner[1] and n.get_BL_corner()[1] >= i.UL_corner[1]:
+                        i.yPos += -3
+                        i.canMove = False
                 if n.get_BL_corner()[0] <= i.UR_corner[0] and i.UR_corner[0] <= n.get_BR_corner()[0]:
-                    if n.get_UL_corner()[1] <= i.UR_corner[1] and n.get_BL_corner()[1] >= i.UR_corner[1]:
-                        pass
+                    if n.get_BL_corner()[1]-5 <= i.UR_corner[1] and n.get_BL_corner()[1] >= i.UR_corner[1]:
+                        i.yPos += -3
+                        i.canMove = False
+
+                # If bot hit right
+                if n.get_UR_corner()[1] <= i.BL_corner[1] and i.BL_corner[1] <= n.get_BR_corner()[1]:
+                    if n.get_UR_corner()[0]-5 <= i.BR_corner[0] and n.get_UR_corner()[0] >= i.BR_corner[0]:
+                        i.xPos += 3
+                        i.canMove = False
+                if n.get_UR_corner()[1] <= i.UL_corner[1] and i.UL_corner[1] <= n.get_BR_corner()[1]:
+                    if n.get_UR_corner()[0]-5 <= i.UL_corner[0] and n.get_UR_corner()[0] >= i.UL_corner[0]:
+                        i.xPos += 3
+                        i.canMove = False
+
+                # If bot hit left
+                if n.get_UL_corner()[1] <= i.UR_corner[1] and i.UR_corner[1] <= n.get_BL_corner()[1]:
+                    if n.get_UL_corner()[0]+5 >= i.UR_corner[0] and n.get_UL_corner()[0] <= i.UR_corner[0]:
+                        i.xPos += -3
+                        i.canMove = False
+                if n.get_UL_corner()[1] <= i.BR_corner[1] and i.BR_corner[1] <= n.get_BL_corner()[1]:
+                    if n.get_UL_corner()[0]+5 >= i.BR_corner[0] and n.get_UL_corner()[0] <= i.BR_corner[0]:
+                        i.xPos += -3
+                        i.canMove = False
 
             outNodeLeft(i.chromosome, i.sensList, i)
             outNodeFront(i.chromosome, i.sensList, i)
@@ -427,9 +462,9 @@ def gameloop():
             screen.blit(i.sprite, (i.xPos, i.yPos))
         for wall in walls:
             pygame.draw.rect(screen, (black), wall.rect)
-        print(walls[15].get_UL_corner()[1])
-        print(walls[15].get_BL_corner()[1])
-        print('')
+        #print(bot1.sensLeft)
+        #print(walls[15].get_BL_corner()[1])
+        #print('')
         pygame.display.update()
         clock.tick(30)
         
