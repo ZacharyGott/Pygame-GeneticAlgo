@@ -361,29 +361,29 @@ def gameloop():
             elif max(i.outputList) == i.outputList[2] and i.canMove:
                 i.xPos += 5
 
-                i.xCent = i.xPos + 15
-                i.yCent = i.yPos + 15
-                i.selfCenter = (i.xCent, i.yCent)
+            i.xCent = i.xPos + 15
+            i.yCent = i.yPos + 15
+            i.selfCenter = (i.xCent, i.yCent)
 
-                i.UL_corner = (i.xCent - 15, i.yCent + 15)
-                i.UR_corner = (i.xCent + 15, i.yCent + 15)
-                i.BR_corner = (i.xCent + 15, i.yCent - 15)
-                i.BL_corner = (i.xCent - 15, i.yCent - 15)
+            i.UL_corner = (i.xCent - 15, i.yCent + 15)
+            i.UR_corner = (i.xCent + 15, i.yCent + 15)
+            i.BR_corner = (i.xCent + 15, i.yCent - 15)
+            i.BL_corner = (i.xCent - 15, i.yCent - 15)
 
-                i.top = (i.UL_corner, i.UR_corner)
-                i.left = (i.BL_corner, i.UL_corner)
-                i.bottom = (i.BL_corner, i.BR_corner)
-                i.right = (i.BR_corner, i.UR_corner)
+            i.top = (i.UL_corner, i.UR_corner)
+            i.left = (i.BL_corner, i.UL_corner)
+            i.bottom = (i.BL_corner, i.BR_corner)
+            i.right = (i.BR_corner, i.UR_corner)
 
-                i.lMid = midpoint(i.left)
-                i.tMid = midpoint(i.top)
-                i.rMid = midpoint(i.right)
+            i.lMid = midpoint(i.left)
+            i.tMid = midpoint(i.top)
+            i.rMid = midpoint(i.right)
 
-                i.sensLeft = distLeft(i.lMid, walls)
-                i.sensFront = distFront(i.tMid, walls)
-                i.sensRight = distRight(i.rMid, walls)
-                i.sensObj = distObj(i.selfCenter, targetPos)
-                i.sensList = [i.sensLeft, i.sensFront, i.sensRight, i.sensObj]
+            i.sensLeft = distLeft(i.lMid, walls)
+            i.sensFront = distFront(i.tMid, walls)
+            i.sensRight = distRight(i.rMid, walls)
+            i.sensObj = distObj(i.selfCenter, targetPos)
+            i.sensList = [i.sensLeft, i.sensFront, i.sensRight, i.sensObj]
 
         screen.fill(white)
         pygame.draw.rect(screen, (255, 0, 0), end_rect)
@@ -391,7 +391,6 @@ def gameloop():
             screen.blit(i.sprite, (i.xPos, i.yPos))
         for wall in walls:
             pygame.draw.rect(screen, (black), wall.rect)
-        print(bot1.sensFront)
         pygame.display.update()
         clock.tick(30)
         
