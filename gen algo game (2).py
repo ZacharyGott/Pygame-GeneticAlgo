@@ -7,6 +7,7 @@
 # Packages and dependancies
 
 import sys
+import threading
 import random
 import math
 import pygame
@@ -148,6 +149,7 @@ for row in wallString:
         if col == "E":
             end_rect = pygame.Rect(dx + 20, dy, 40, 40)
             targetPos = (dx + 20, dy)
+            targMid = (dx+39, dy+19)
         dx += 40
     dy += 40
     dx = 0
@@ -354,13 +356,63 @@ for i in botList:
 
 # In[8]:
 
+# Genetic Functions
+
+def fitness():
+    pass
+
+def selection():
+    pass
+
+def crossover():
+    pass
+
+def mutation():
+    pass
+
+def distribution():
+    pass
 
 # Function for the game loop
 
+numOfWin = 0
+timer = 0
+
 def gameloop():
     
-    #function containing the loop for the main processes
-    
+     # Function containing the loop for the main processes
+
+    global numOfWin
+    global timer
+
+
+    # Functions for round end
+
+    def roundEnd():
+
+        global numOfWin
+        global timer
+
+        for i in botList:
+            i.canMove = False
+
+        numOfWin = 0
+        timer = 0
+
+        fitness()
+        selection()
+        crossover()
+        mutation()
+        distribution()
+
+        for i in botList:
+            i.xPos = (width * .5) - 15
+            i.yPos = (height * .8) + 15
+            i.fitness = 0
+            i.canMove = True
+
+
+
     inGame = True
     
     while inGame:
@@ -372,6 +424,13 @@ def gameloop():
                 if event.key == pygame.K_e: sys.exit()
 
         for i in botList:
+
+            # Makes winners if hit target
+
+            if abs(targMid[0]-i.selfCenter[0]) <= 35 and abs(targMid[1]-i.selfCenter[1]) <=35:
+                if numOfWin < 2:
+                    i.fitness = 1000 - numOfWin
+                    numOfWin += 1
 
             # Disables movement if bots are outside of boundaries
             if i.xPos > width-65:
@@ -456,15 +515,23 @@ def gameloop():
             i.sensObj = distObj(i.selfCenter, targetPos)
             i.sensList = [i.sensLeft, i.sensFront, i.sensRight, i.sensObj]
 
+        moveCount = 0
+        for i in botList:
+            if i.canMove == False:
+                moveCount += 1
+        if moveCount == 8:
+            roundEnd()
+
         screen.fill(white)
         pygame.draw.rect(screen, (255, 0, 0), end_rect)
         for i in botList:
             screen.blit(i.sprite, (i.xPos, i.yPos))
         for wall in walls:
             pygame.draw.rect(screen, (black), wall.rect)
-        #print(bot1.sensLeft)
-        #print(walls[15].get_BL_corner()[1])
-        #print('')
+        timer += 1
+        if timer > 209:
+            roundEnd()
+        print(timer)
         pygame.display.update()
         clock.tick(30)
         
