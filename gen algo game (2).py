@@ -129,11 +129,11 @@ wallString = [
     'W        W',
     'W  WW WW W',
     'W  W     W',
-    'W        W',
+    'W    W   W',
     'W  WWWWW W',
     'W      W W',
-    'W W      W',
-    'WWW  W   W',
+    'W W    W W',
+    'W W  W   W',
     'W        W',
     'W WW  WW W',
     'W        W',
@@ -366,7 +366,7 @@ def distribution():
 def mutation(losers):
 
     for i in losers:
-        if random.choice(range(0,100)) < 20:
+        if random.choice(range(0,100)) < 40:
             i.chromosome[random.choice(range(0, 12))] = random.choice(range(0,1000))
 
 def crossover(winners, losers):
@@ -381,7 +381,7 @@ def crossover(winners, losers):
     for i in losers[3:]:
         i.chromosome = chrom2
 
-    print(winners[1].chromosome)
+    #print(winners[1].chromosome)
     mutation(losers)
 
 def fitness():
@@ -392,7 +392,8 @@ def fitness():
     fitList = []
 
     for i in botList:
-        i.fitness = 1000-i.sensObj
+        #i.fitness = 1000-i.sensObj
+        i.fitness = 1000-i.yPos
         fitList.insert(len(fitList), i.fitness)
     fitList.sort()
     highestList = fitList[-2:]
@@ -566,7 +567,7 @@ def gameloop():
             roundEnd()
         #print(bot1.sensObj)
         pygame.display.update()
-        clock.tick(30)
+        #clock.tick(30)
         
 
 
