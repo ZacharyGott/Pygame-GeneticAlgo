@@ -17,8 +17,6 @@ mfitList = []
 generation = 1
 genList = []
 
-first = bot1
-second = bot2
 
 # In[2]:
 
