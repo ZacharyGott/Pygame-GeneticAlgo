@@ -10,6 +10,7 @@ import sys
 import matplotlib.pyplot as plt
 import random
 import math
+import statistics
 import pygame
 pygame.init()
 
@@ -129,8 +130,8 @@ class Wall(object):
         
 wallString = [
     'WWWWWWWWWW',
-    'W   E    W',
-    'W        W',
+    'WW  E    W',
+    'W   W    W',
     'W  WW WW W',
     'W  W     W',
     'W    W   W',
@@ -138,7 +139,7 @@ wallString = [
     'W      W W',
     'W W    W W',
     'W W  W   W',
-    'W        W',
+    'W WW   W W',
     'W WW  WW W',
     'W        W',
     'W        W',
@@ -388,9 +389,9 @@ def crossover(winners, losers):
     chrom1 = winners[1].chromosome[0:crossPoint] + winners[0].chromosome[crossPoint:]
     chrom2 = winners[0].chromosome[0:crossPoint] + winners[1].chromosome[crossPoint:]
 
-    for i in losers[0:2]:
+    for i in losers[0:3]:
         i.chromosome = chrom1
-    for i in losers[2:4]:
+    for i in losers[3:]:
         i.chromosome = chrom2
 
     #print(winners[1].chromosome)
@@ -401,6 +402,8 @@ def fitness():
     global generation
     global genList
     global mfitList
+    global first
+    global second
 
     tempWinnerList = []
     loserList = []
@@ -408,8 +411,8 @@ def fitness():
     fitList = []
 
     for i in botList:
-        #i.fitness = 1000-i.sensObj
-        i.fitness = 1000-i.yPos
+        i.fitness = 1000-i.sensObj
+        #i.fitness = 1000-i.yPos
         fitList.insert(len(fitList), i.fitness)
     fitList.sort()
     highestList = fitList[-2:]
@@ -423,6 +426,12 @@ def fitness():
     for i in botList:
         if i not in winnerList:
             loserList.insert(len(loserList), i)
+
+
+
+    #winnerList[0].chromosome = first
+    #winnerList[1].chromosome = second
+    #print(first)
 
     genList.insert(len(genList), generation)
     generation += 1
