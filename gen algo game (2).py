@@ -130,10 +130,10 @@ wallString = [
     'W  WW WW W',
     'W  W     W',
     'W        W',
-    'W WW WWW W',
+    'W  WWWWW W',
     'W      W W',
-    'W        W',
-    'W        W',
+    'W W      W',
+    'WWW  W   W',
     'W        W',
     'W WW  WW W',
     'W        W',
@@ -356,26 +356,62 @@ for i in botList:
 
 # In[8]:
 
+numOfWin = 0
+
 # Genetic Functions
-
-def fitness():
-    pass
-
-def selection():
-    pass
-
-def crossover():
-    pass
-
-def mutation():
-    pass
 
 def distribution():
     pass
 
+def mutation(losers):
+
+    for i in losers:
+        if random.choice(range(0,100)) < 20:
+            i.chromosome[random.choice(range(0, 12))] = random.choice(range(0,1000))
+
+def crossover(winners, losers):
+
+    crossPoint = random.choice(range(0, 11))
+
+    chrom1 = winners[1].chromosome[0:crossPoint] + winners[0].chromosome[crossPoint:]
+    chrom2 = winners[0].chromosome[0:crossPoint] + winners[1].chromosome[crossPoint:]
+
+    for i in losers[0:3]:
+        i.chromosome = chrom1
+    for i in losers[3:]:
+        i.chromosome = chrom2
+
+    print(winners[1].chromosome)
+    mutation(losers)
+
+def fitness():
+
+    tempWinnerList = []
+    loserList = []
+    
+    fitList = []
+
+    for i in botList:
+        i.fitness = 1000-i.sensObj
+        fitList.insert(len(fitList), i.fitness)
+    fitList.sort()
+    highestList = fitList[-2:]
+
+    for i in highestList:
+        for n in botList:
+            if n.fitness == i:
+                tempWinnerList.insert(len(tempWinnerList), n)
+    winnerList = tempWinnerList[0:2]
+
+    for i in botList:
+        if i not in winnerList:
+            loserList.insert(len(loserList), i)
+
+    crossover(winnerList, loserList)
+
+
 # Function for the game loop
 
-numOfWin = 0
 timer = 0
 
 def gameloop():
@@ -396,14 +432,11 @@ def gameloop():
         for i in botList:
             i.canMove = False
 
-        numOfWin = 0
         timer = 0
 
         fitness()
-        selection()
-        crossover()
-        mutation()
-        distribution()
+
+        numOfWin = 0
 
         for i in botList:
             i.xPos = (width * .5) - 15
@@ -429,7 +462,7 @@ def gameloop():
 
             if abs(targMid[0]-i.selfCenter[0]) <= 35 and abs(targMid[1]-i.selfCenter[1]) <=35:
                 if numOfWin < 2:
-                    i.fitness = 1000 - numOfWin
+                    #i.fitness = 10000 - numOfWin
                     numOfWin += 1
 
             # Disables movement if bots are outside of boundaries
@@ -529,9 +562,9 @@ def gameloop():
         for wall in walls:
             pygame.draw.rect(screen, (black), wall.rect)
         timer += 1
-        if timer > 209:
+        if timer > 149:
             roundEnd()
-        print(timer)
+        #print(bot1.sensObj)
         pygame.display.update()
         clock.tick(30)
         
