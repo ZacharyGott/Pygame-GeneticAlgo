@@ -7,12 +7,18 @@
 # Packages and dependancies
 
 import sys
-import threading
+import matplotlib.pyplot as plt
 import random
 import math
 import pygame
 pygame.init()
 
+mfitList = []
+generation = 1
+genList = []
+
+first = bot1
+second = bot2
 
 # In[2]:
 
@@ -199,8 +205,12 @@ def distFront(middlePoint, walls):
 
             if middlePoint[0]-20 < n[0] < middlePoint[0]+20 and n[1] < middlePoint[1]:
                 listOfCoords.insert(len(listOfCoords), n)
-    nearest = max(listOfCoords)
-    
+    try:
+        nearest = max(listOfCoords)
+    except:
+        return 0
+        pass
+
     return round(math.sqrt(((nearest[0] - middlePoint[0]) ** 2) + ((nearest[1] - middlePoint[1]) ** 2)))
 
 
@@ -214,8 +224,12 @@ def distRight(middlePoint, walls):
         for n in i.rightList:
             if middlePoint[1]-20 < n[1] < middlePoint[1]+20 and n[0] > middlePoint[0]:
                 listOfCoords.insert(len(listOfCoords), n)
-    nearest = min(listOfCoords)
-    
+    try:
+        nearest = max(listOfCoords)
+    except:
+        return 0
+        pass
+
     return round(math.sqrt(((nearest[0] - middlePoint[0]) ** 2) + ((nearest[1] - middlePoint[1]) ** 2)))
 
 
@@ -376,15 +390,19 @@ def crossover(winners, losers):
     chrom1 = winners[1].chromosome[0:crossPoint] + winners[0].chromosome[crossPoint:]
     chrom2 = winners[0].chromosome[0:crossPoint] + winners[1].chromosome[crossPoint:]
 
-    for i in losers[0:3]:
+    for i in losers[0:2]:
         i.chromosome = chrom1
-    for i in losers[3:]:
+    for i in losers[2:4]:
         i.chromosome = chrom2
 
     #print(winners[1].chromosome)
     mutation(losers)
 
 def fitness():
+
+    global generation
+    global genList
+    global mfitList
 
     tempWinnerList = []
     loserList = []
@@ -408,6 +426,9 @@ def fitness():
         if i not in winnerList:
             loserList.insert(len(loserList), i)
 
+    genList.insert(len(genList), generation)
+    generation += 1
+    mfitList.insert(len(mfitList), winnerList[0].fitness)
     crossover(winnerList, loserList)
 
 
@@ -417,10 +438,14 @@ timer = 0
 
 def gameloop():
     
-     # Function containing the loop for the main processes
+    # Function containing the loop for the main processes
 
     global numOfWin
     global timer
+    global genList
+    global generation
+    global mfitList
+
 
 
     # Functions for round end
@@ -452,10 +477,10 @@ def gameloop():
     while inGame:
         
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: sys.exit()
+            if event.type == pygame.QUIT: inGame = False
             
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e: sys.exit()
+                if event.key == pygame.K_e: inGame = False
 
         for i in botList:
 
@@ -565,10 +590,10 @@ def gameloop():
         timer += 1
         if timer > 149:
             roundEnd()
-        #print(bot1.sensObj)
+        #print(generation)
         pygame.display.update()
         #clock.tick(30)
-        
+
 
 
 # In[9]:
@@ -576,4 +601,10 @@ def gameloop():
 
 gameloop()
 
-
+plt.xlim(0,generation * 1.5)
+plt.ylim(min(mfitList)-100, 1000)
+plt.xlabel('No. Of Generation')
+plt.ylabel('Max Fitness')
+plt.plot(genList, mfitList)
+plt.show()
+print(generation)
