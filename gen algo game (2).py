@@ -575,13 +575,4 @@ def gameloop():
 
 gameloop()
 
-# In[ ]:
-
-'''
-corners for both classes are calculated wrong and for some reason, when corrected, it completely fucks up the sensors
-
- - thinking of switching the corner calculations to based off of the origin coords of the objects, and fix sensors from
- there.
-'''
-
 
