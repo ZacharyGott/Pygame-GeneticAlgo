@@ -7,10 +7,8 @@
 # Packages and dependancies
 
 import sys
-import matplotlib.pyplot as plt
 import random
 import math
-import statistics
 import pygame
 pygame.init()
 
@@ -607,11 +605,3 @@ def gameloop():
 
 
 gameloop()
-
-plt.xlim(0,generation * 1.5)
-plt.ylim(min(mfitList)-100, 1000)
-plt.xlabel('No. Of Generation')
-plt.ylabel('Max Fitness')
-plt.plot(genList, mfitList)
-plt.show()
-print(generation)
