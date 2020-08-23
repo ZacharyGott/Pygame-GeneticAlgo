@@ -1,5 +1,8 @@
 # Pygame-GeneticAlgo
-Genetic algorithm that learns how to play a Pygame mini-game
+Genetic algorithm that learns how to play a Pygame mini-game<br /><br />
+
+A set of 8 bots will learn to navigate a customizable maze and reach a target. They will be eliminated if they hit a 
+wall and at the end of the round, the top 2 bots are selected to undergo genetic processes to form 6 offspring
 
 # What You Need
 The Pygame module
