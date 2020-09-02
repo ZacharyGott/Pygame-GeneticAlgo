@@ -130,7 +130,7 @@ wallString = [
     'WWWWWWWWWW',
     'WW  E    W',
     'W        W',
-    'W WWW WW W',
+    'WWWWW WW W',
     'W  W   W W',
     'W    W   W',
     'W  W W W W',
